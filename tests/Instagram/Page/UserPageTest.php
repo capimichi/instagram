@@ -1,5 +1,6 @@
 <?php
 
+use Capimichi\Instagram\InstagramSession;
 use Capimichi\Instagram\Page\UserPage;
 use PHPUnit\Framework\TestCase;
 
@@ -25,17 +26,13 @@ class UserPageTest extends TestCase
         self::assertInternalType('string', $userPage->getUsername());
     }
 
-    public function testCanFetchFollowers()
+    public function testCanGetFollowers()
     {
-        // https://www.instagram.com/chanelofficial/
-//        $userPage = new UserPage("https://www.instagram.com/chanelofficial/");
-//        self::assertCount(700, $userPage->getFollowers(700));
-    }
-
-    public function testCanLoginAndGetFollowers()
-    {
+        InstagramSession::setCredential("capimichi2", "Benten.10");
+        InstagramSession::login();
         $userPage = new UserPage("chanelofficial");
-        $userPage->login("capimichi2", "Benten.10");
         self::assertCount(500, $userPage->getFollowers(500));
+        self::assertCount(700, $userPage->getFollowers(700));
+        self::assertCount(1000, $userPage->getFollowers(1000));
     }
 }
