@@ -7,7 +7,6 @@
         }
     ],
     "require": {
-        "capimichi/crawler": "^1.2",
         "mashape/unirest-php": "^3.0",
         "phpFastCache/phpFastCache": "^6.0"
     },

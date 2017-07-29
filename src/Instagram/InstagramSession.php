@@ -81,7 +81,7 @@ class InstagramSession
         self::$userPassword = $password;
 
         CacheManager::setDefaultConfig(array(
-            "path" => dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . "var" . DIRECTORY_SEPARATOR . "sessions" . DIRECTORY_SEPARATOR,
+            "path" => dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . "var" . DIRECTORY_SEPARATOR . "cache" . DIRECTORY_SEPARATOR,
         ));
         self::$cache = CacheManager::getInstance('files');
     }
