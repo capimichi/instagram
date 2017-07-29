@@ -31,9 +31,21 @@ class AccountTest extends TestCase
         InstagramSession::setCredential("capimichi2", "Benten.10");
         InstagramSession::login();
         $userPage = Account::createFromUsername("chanelofficial");
-        self::assertCount(500, $userPage->getFollowers(500));
-        self::assertCount(700, $userPage->getFollowers(700));
-        self::assertCount(1000, $userPage->getFollowers(1000));
+        $followers = $userPage->getFollowers(500);
+        self::assertCount(500, $followers);
+        foreach ($followers as $follower) {
+            self::assertNotEmpty($follower->getUsername());
+        }
+        $followers = $userPage->getFollowers(700);
+        self::assertCount(700, $followers);
+        foreach ($followers as $follower) {
+            self::assertNotEmpty($follower->getUsername());
+        }
+        $followers = $userPage->getFollowers(1000);
+        self::assertCount(1000, $followers);
+        foreach ($followers as $follower) {
+            self::assertNotEmpty($follower->getUsername());
+        }
     }
 
     public function testCanGetMedias()

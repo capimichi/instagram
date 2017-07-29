@@ -222,7 +222,7 @@ class Account
         foreach ($datas as $data) {
             $edges = ArrayReader::getNestedPath($data, "data/user/edge_followed_by/edges");
             foreach ($edges as $edge) {
-                $user = new Account($edge['node']['username']);
+                $user = Account::createFromUsername($edge['node']['username']);
                 array_push($users, $user);
             }
         }
