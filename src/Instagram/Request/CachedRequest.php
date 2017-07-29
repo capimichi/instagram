@@ -2,6 +2,7 @@
 
 namespace Capimichi\Instagram\Request;
 
+use Capimichi\Instagram\InstagramCache;
 use Capimichi\Instagram\InstagramSession;
 use phpFastCache\CacheManager;
 use Unirest\Request;
@@ -12,12 +13,6 @@ use Unirest\Request;
  */
 class CachedRequest extends Request
 {
-
-    /**
-     * @var mixed
-     */
-    protected static $cache;
-
     /**
      * @param string $url
      * @param int $expiration
@@ -29,7 +24,7 @@ class CachedRequest extends Request
      */
     public static function get($url, $expiration = 172800, $headers = array(), $parameters = null, $username = null, $password = null)
     {
-        $cache = self::getCache();
+        $cache = InstagramCache::getCache();
         $cacheKey = md5($url);
         $cachedString = $cache->getItem($cacheKey);
         $data = $cachedString->get();
@@ -43,18 +38,6 @@ class CachedRequest extends Request
             $response = $data;
         }
         return $response;
-    }
-
-
-    protected static function getCache()
-    {
-        if (!isset(self::$cache)) {
-            CacheManager::setDefaultConfig(array(
-                "path" => dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR . "var" . DIRECTORY_SEPARATOR . "cache" . DIRECTORY_SEPARATOR,
-            ));
-            self::$cache = CacheManager::getInstance('files');
-        }
-        return self::$cache;
     }
 
 

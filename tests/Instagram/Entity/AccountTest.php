@@ -20,8 +20,10 @@ class AccountTest extends TestCase
         self::assertInternalType('int', $userPage->getId());
         self::assertInternalType('bool', $userPage->isPrivate());
         self::assertInternalType('bool', $userPage->isVerified());
-        self::assertNotEmpty($userPage->getProfilePicUrl());
-        self::assertInternalType('string', $userPage->getProfilePicUrl());
+        self::assertNotEmpty($userPage->getProfilePictureUrl());
+        self::assertInternalType('string', $userPage->getProfilePictureUrl());
+        self::assertNotEmpty($userPage->getProfilePictureUrlHD());
+        self::assertInternalType('string', $userPage->getProfilePictureUrlHD());
         self::assertNotEmpty($userPage->getUsername());
         self::assertInternalType('string', $userPage->getUsername());
     }

@@ -35,11 +35,6 @@ class InstagramSession
     protected static $userPassword;
 
     /**
-     * @var ExtendedCacheItemPoolInterface
-     */
-    protected static $cache;
-
-    /**
      * @return mixed
      */
     public static function getUserSession()
@@ -79,11 +74,6 @@ class InstagramSession
     {
         self::$userName = $username;
         self::$userPassword = $password;
-
-        CacheManager::setDefaultConfig(array(
-            "path" => dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . "var" . DIRECTORY_SEPARATOR . "cache" . DIRECTORY_SEPARATOR,
-        ));
-        self::$cache = CacheManager::getInstance('files');
     }
 
     /**
@@ -92,7 +82,8 @@ class InstagramSession
      */
     public static function login()
     {
-        $cachedString = self::$cache->getItem('session');
+        $cache = InstagramCache::getCache();
+        $cachedString = $cache->getItem('session');
         if (!self::isLoggedIn()) {
             $response = Request::get(Endpoints::BASE_URL);
             if ($response->code !== 200) {
@@ -119,7 +110,7 @@ class InstagramSession
             $cookies = self::parseCookies($response->headers['Set-Cookie']);
             $cookies['mid'] = $mid;
             $cachedString->set($cookies)->expiresAfter(86400);
-            self::$cache->save($cachedString);
+            $cache->save($cachedString);
             self::setUserSession($cookies);
         } else {
             $session = $cachedString->get();

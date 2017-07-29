@@ -227,6 +227,7 @@ class Media extends InstagramEntity
             $this->taggedUsers = [];
             $edges = ArrayReader::getNestedPath($this->getJsonData(), "graphql/shortcode_media/edge_media_to_tagged_user/edges");
             foreach ($edges as $edge) {
+                $edge = (array)$edge;
                 $user = Account::createFromUsername(ArrayReader::getNestedPath($edge, "node/user/username"));
                 array_push($this->taggedUsers, $user);
             }
@@ -247,8 +248,8 @@ class Media extends InstagramEntity
      */
     public function getCaption()
     {
-        if (!isset($this->code)) {
-            $this->code = ArrayReader::getNestedPath($this->getJsonData(), "graphql/shortcode_media/edge_media_to_caption/edges/0/node/text");
+        if (!isset($this->caption)) {
+            $this->caption = ArrayReader::getNestedPath($this->getJsonData(), "graphql/shortcode_media/edge_media_to_caption/edges/0/node/text");
         }
         return $this->caption;
     }
