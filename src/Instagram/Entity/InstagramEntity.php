@@ -12,7 +12,7 @@ namespace Capimichi\Instagram\Entity;
 use Capimichi\Instagram\Endpoints;
 use Capimichi\Instagram\Request\CachedRequest;
 
-class InstagramEntity
+abstract class InstagramEntity
 {
     /**
      * @var array
