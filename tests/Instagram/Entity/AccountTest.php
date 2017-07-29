@@ -41,8 +41,8 @@ class AccountTest extends TestCase
         foreach ($followers as $follower) {
             self::assertNotEmpty($follower->getUsername());
         }
-        $followers = $userPage->getFollowers(1000);
-        self::assertCount(1000, $followers);
+        $followers = $userPage->getFollowers(1114);
+        self::assertCount(1114, $followers);
         foreach ($followers as $follower) {
             self::assertNotEmpty($follower->getUsername());
         }

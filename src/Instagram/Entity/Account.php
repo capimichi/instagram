@@ -10,21 +10,65 @@ use Capimichi\Instagram\Request\AuthenticatedRequest;
 use Capimichi\Instagram\Request\CachedRequest;
 use Unirest\Request;
 
-class Account
+class Account extends InstagramEntity
 {
     const BATCH_SIZE_FOLLOWERS = 500;
     const BATCH_SIZE_MEDIA = 20;
-
-    /**
-     * @var array
-     */
-    protected $jsonData;
 
     /**
      * @var string
      */
     protected $username;
 
+    /**
+     * @var string
+     */
+    protected $biography;
+
+    /**
+     * @var int
+     */
+    protected $followersCount;
+
+    /**
+     * @var int
+     */
+    protected $followedCount;
+
+    /**
+     * @var int
+     */
+    protected $mediasCount;
+
+    /**
+     * @var string
+     */
+    protected $fullName;
+
+    /**
+     * @var string
+     */
+    protected $id;
+
+    /**
+     * @var bool
+     */
+    protected $private;
+
+    /**
+     * @var bool
+     */
+    protected $verified;
+
+    /**
+     * @var string
+     */
+    protected $profilePictureUrl;
+
+    /**
+     * @var string
+     */
+    protected $profilePictureUrlHD;
 
     /**
      * @param $username
@@ -63,105 +107,15 @@ class Account
         return $account;
     }
 
-
     /**
-     * @return array
-     */
-    public function getJsonData()
-    {
-        if (!isset($this->jsonData)) {
-            $this->jsonData = (array)json_decode(CachedRequest::get(Endpoints::getAccountJsonLink($this->username))->raw_body);
-        }
-        return $this->jsonData;
-    }
-
-
-    /**
-     * @return string|null
-     */
-    public function getBiography()
-    {
-        return ArrayReader::getNestedPath($this->getJsonData(), "user/biography");
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getFollowersCount()
-    {
-        return ArrayReader::getNestedPath($this->getJsonData(), "user/followed_by/count");
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getFollowedCount()
-    {
-        return ArrayReader::getNestedPath($this->getJsonData(), "user/follows/count");
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getMediasCount()
-    {
-        return ArrayReader::getNestedPath($this->getJsonData(), "user/media/count");
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getFullName()
-    {
-        return ArrayReader::getNestedPath($this->getJsonData(), "user/full_name");
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getId()
-    {
-        return intval(ArrayReader::getNestedPath($this->getJsonData(), "user/id"));
-    }
-
-    /**
-     * @return bool|null
-     */
-    public function isPrivate()
-    {
-        return ArrayReader::getNestedPath($this->getJsonData(), "user/is_private");
-    }
-
-    /**
-     * @return bool|null
-     */
-    public function isVerified()
-    {
-        return ArrayReader::getNestedPath($this->getJsonData(), "user/is_verified");
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getProfilePicUrl($hd = false)
-    {
-        return ArrayReader::getNestedPath($this->getJsonData(), sprintf("user/profile_pic_url%s", $hd ? "_hd" : ""));
-    }
-
-    /**
-     * @return string|null
+     * @return string
      */
     public function getUsername()
     {
+        if (!isset($this->username)) {
+            $this->username = ArrayReader::getNestedPath($this->getJsonData(), "user/username");
+        }
         return $this->username;
-    }
-
-    /**
-     * @param array $jsonData
-     */
-    public function setJsonData($jsonData)
-    {
-        $this->jsonData = $jsonData;
     }
 
     /**
@@ -172,6 +126,195 @@ class Account
         $this->username = $username;
     }
 
+    /**
+     * @return string
+     */
+    public function getBiography()
+    {
+        if (!isset($this->biography)) {
+            $this->biography = ArrayReader::getNestedPath($this->getJsonData(), "user/biography");
+        }
+        return $this->biography;
+    }
+
+    /**
+     * @param string $biography
+     */
+    public function setBiography($biography)
+    {
+        $this->biography = $biography;
+    }
+
+    /**
+     * @return int
+     */
+    public function getFollowersCount()
+    {
+        if (!isset($this->followersCount)) {
+            $this->followersCount = ArrayReader::getNestedPath($this->getJsonData(), "user/followed_by/count");
+        }
+        return $this->followersCount;
+    }
+
+    /**
+     * @param int $followersCount
+     */
+    public function setFollowersCount($followersCount)
+    {
+        $this->followersCount = $followersCount;
+    }
+
+    /**
+     * @return int
+     */
+    public function getFollowedCount()
+    {
+        if (!isset($this->followedCount)) {
+            $this->followedCount = ArrayReader::getNestedPath($this->getJsonData(), "user/follows/count");
+        }
+        return $this->followedCount;
+    }
+
+    /**
+     * @param int $followedCount
+     */
+    public function setFollowedCount($followedCount)
+    {
+        $this->followedCount = $followedCount;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMediasCount()
+    {
+        if (!isset($this->mediasCount)) {
+            $this->mediasCount = ArrayReader::getNestedPath($this->getJsonData(), "user/media/count");
+        }
+        return $this->mediasCount;
+    }
+
+    /**
+     * @param int $mediasCount
+     */
+    public function setMediasCount($mediasCount)
+    {
+        $this->mediasCount = $mediasCount;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFullName()
+    {
+        if (!isset($this->fullName)) {
+            $this->fullName = ArrayReader::getNestedPath($this->getJsonData(), "user/full_name");
+        }
+        return $this->fullName;
+    }
+
+    /**
+     * @param string $fullName
+     */
+    public function setFullName($fullName)
+    {
+        $this->fullName = $fullName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getId()
+    {
+        if (!isset($this->id)) {
+            $this->id = intval(ArrayReader::getNestedPath($this->getJsonData(), "user/id"));
+        }
+        return $this->id;
+    }
+
+    /**
+     * @param string $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPrivate()
+    {
+        if (!isset($this->private)) {
+            $this->private = ArrayReader::getNestedPath($this->getJsonData(), "user/is_private");
+        }
+        return $this->private;
+    }
+
+    /**
+     * @param bool $private
+     */
+    public function setPrivate($private)
+    {
+        $this->private = $private;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isVerified()
+    {
+        if (!isset($this->verified)) {
+            $this->verified = ArrayReader::getNestedPath($this->getJsonData(), "user/is_verified");
+        }
+        return $this->verified;
+    }
+
+    /**
+     * @param bool $verified
+     */
+    public function setVerified($verified)
+    {
+        $this->verified = $verified;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProfilePictureUrl()
+    {
+        if (!isset($this->profilePictureUrl)) {
+            $this->profilePictureUrl = ArrayReader::getNestedPath($this->getJsonData(), "user/profile_pic_url");
+        }
+        return $this->profilePictureUrl;
+    }
+
+    /**
+     * @param string $profilePictureUrl
+     */
+    public function setProfilePictureUrl($profilePictureUrl)
+    {
+        $this->profilePictureUrl = $profilePictureUrl;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProfilePictureUrlHD()
+    {
+        if (!isset($this->profilePictureUrlHD)) {
+            $this->profilePictureUrlHD = ArrayReader::getNestedPath($this->getJsonData(), "user/profile_pic_url_hd");
+        }
+        return $this->profilePictureUrlHD;
+    }
+
+    /**
+     * @param string $profilePictureUrlHD
+     */
+    public function setProfilePictureUrlHD($profilePictureUrlHD)
+    {
+        $this->profilePictureUrlHD = $profilePictureUrlHD;
+    }
 
     /**
      * Get followers (require login)
@@ -230,7 +373,6 @@ class Account
         return $users;
     }
 
-
     /**
      * @param int $count
      *
@@ -278,4 +420,14 @@ class Account
         }
         return $medias;
     }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getJsonLink()
+    {
+        return Endpoints::getAccountJsonLink($this->username);
+    }
+
+
 }

@@ -12,17 +12,89 @@ use Unirest\Request;
  * Class Media
  * @package Capimichi\Instagram\Entity
  */
-class Media
+class Media extends InstagramEntity
 {
-    /**
-     * @var array
-     */
-    protected $jsonData;
 
     /**
      * @var string
      */
     protected $code;
+
+    /**
+     * @var string
+     */
+    protected $id;
+
+    /**
+     * @var array
+     */
+    protected $dimensions;
+
+    /**
+     * @var string
+     */
+    protected $url;
+
+    /**
+     * @var bool
+     */
+    protected $video;
+
+    /**
+     * @var array
+     */
+    protected $taggedUsers;
+
+    /**
+     * @var string
+     */
+    protected $caption;
+
+    /**
+     * @var bool
+     */
+    protected $captionEdited;
+
+    /**
+     * @var array
+     */
+    protected $comments;
+
+    /**
+     * @var int
+     */
+    protected $commentsCount;
+
+    /**
+     * @var bool
+     */
+    protected $commentsDisabled;
+
+    /**
+     * @var int
+     */
+    protected $takenTimestamp;
+
+    /**
+     * @var int
+     */
+    protected $likesCount;
+
+    /**
+     * @var array
+     */
+    protected $likingUsers;
+
+    /**
+     * @var Location
+     */
+    protected $location;
+
+    /**
+     * @var Account
+     */
+    protected $owner;
+
 
     /**
      * @param $array
@@ -49,30 +121,13 @@ class Media
     }
 
     /**
-     * @return array
-     */
-    public function getJsonData()
-    {
-        if (!isset($this->jsonData)) {
-            $this->jsonData = (array)json_decode(Request::get(Endpoints::getMediaJsonLink($this->code))->raw_body, true);
-
-        }
-        return $this->jsonData;
-    }
-
-    /**
-     * @param array $jsonData
-     */
-    public function setJsonData($jsonData)
-    {
-        $this->jsonData = $jsonData;
-    }
-
-    /**
      * @return string
      */
     public function getCode()
     {
+        if (!isset($this->code)) {
+            $this->code = ArrayReader::getNestedPath($this->getJsonData(), "graphql/shortcode_media/shortcode");
+        }
         return $this->code;
     }
 
@@ -89,15 +144,40 @@ class Media
      */
     public function getId()
     {
-        return ArrayReader::getNestedPath($this->getJsonData(), "graphql/shortcode_media/id");
+        if (!isset($this->id)) {
+            $this->id = ArrayReader::getNestedPath($this->getJsonData(), "graphql/shortcode_media/id");
+        }
+        return $this->id;
     }
 
     /**
-     * @return \stdClass
+     * @param string $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return array
      */
     public function getDimensions()
     {
-        return ArrayReader::getNestedPath($this->getJsonData(), "graphql/shortcode_media/dimensions");
+        if (!isset($this->dimensions)) {
+            $this->dimensions = [
+                ArrayReader::getNestedPath($this->getJsonData(), "graphql/shortcode_media/dimensions/width"),
+                ArrayReader::getNestedPath($this->getJsonData(), "graphql/shortcode_media/dimensions/height"),
+            ];
+        }
+        return $this->dimensions;
+    }
+
+    /**
+     * @param array $dimensions
+     */
+    public function setDimensions($dimensions)
+    {
+        $this->dimensions = $dimensions;
     }
 
     /**
@@ -105,7 +185,18 @@ class Media
      */
     public function getUrl()
     {
-        return ArrayReader::getNestedPath($this->getJsonData(), "graphql/shortcode_media/display_url");
+        if (!isset($this->url)) {
+            $this->url = ArrayReader::getNestedPath($this->getJsonData(), "graphql/shortcode_media/display_url");
+        }
+        return $this->url;
+    }
+
+    /**
+     * @param string $url
+     */
+    public function setUrl($url)
+    {
+        $this->url = $url;
     }
 
     /**
@@ -113,7 +204,18 @@ class Media
      */
     public function isVideo()
     {
-        return ArrayReader::getNestedPath($this->getJsonData(), "graphql/shortcode_media/is_video");
+        if (!isset($this->video)) {
+            $this->video = ArrayReader::getNestedPath($this->getJsonData(), "graphql/shortcode_media/is_video");
+        }
+        return $this->video;
+    }
+
+    /**
+     * @param bool $video
+     */
+    public function setVideo($video)
+    {
+        $this->video = $video;
     }
 
     /**
@@ -121,21 +223,42 @@ class Media
      */
     public function getTaggedUsers()
     {
-        $users = [];
-        $edges = ArrayReader::getNestedPath($this->getJsonData(), "graphql/shortcode_media/edge_media_to_tagged_user/edges");
-        foreach ($edges as $edge) {
-            $user = Account::createFromUsername(ArrayReader::getNestedPath($edge, "node/user/username"));
-            array_push($users, $user);
+        if (!isset($this->taggedUsers)) {
+            $this->taggedUsers = [];
+            $edges = ArrayReader::getNestedPath($this->getJsonData(), "graphql/shortcode_media/edge_media_to_tagged_user/edges");
+            foreach ($edges as $edge) {
+                $user = Account::createFromUsername(ArrayReader::getNestedPath($edge, "node/user/username"));
+                array_push($this->taggedUsers, $user);
+            }
         }
-        return $users;
+        return $this->taggedUsers;
     }
 
     /**
-     * @return string|null
+     * @param array $taggedUsers
+     */
+    public function setTaggedUsers($taggedUsers)
+    {
+        $this->taggedUsers = $taggedUsers;
+    }
+
+    /**
+     * @return string
      */
     public function getCaption()
     {
-        return ArrayReader::getNestedPath($this->getJsonData(), "graphql/shortcode_media/edge_media_to_caption/edges/0/node/text");
+        if (!isset($this->code)) {
+            $this->code = ArrayReader::getNestedPath($this->getJsonData(), "graphql/shortcode_media/edge_media_to_caption/edges/0/node/text");
+        }
+        return $this->caption;
+    }
+
+    /**
+     * @param string $caption
+     */
+    public function setCaption($caption)
+    {
+        $this->caption = $caption;
     }
 
     /**
@@ -143,15 +266,56 @@ class Media
      */
     public function isCaptionEdited()
     {
-        return ArrayReader::getNestedPath($this->getJsonData(), "graphql/shortcode_media/caption_is_edited");
+        if (!isset($this->captionEdited)) {
+            $this->captionEdited = ArrayReader::getNestedPath($this->getJsonData(), "graphql/shortcode_media/caption_is_edited");
+        }
+        return $this->captionEdited;
     }
 
     /**
-     *
+     * @param bool $captionEdited
+     */
+    public function setCaptionEdited($captionEdited)
+    {
+        $this->captionEdited = $captionEdited;
+    }
+
+    /**
+     * @return array
      */
     public function getComments()
     {
-        //TODO: Get comments (test if many comments)
+        if (!isset($this->comments)) {
+            //TODO: Get comments media
+        }
+        return $this->comments;
+    }
+
+    /**
+     * @param array $comments
+     */
+    public function setComments($comments)
+    {
+        $this->comments = $comments;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCommentsCount()
+    {
+        if (!isset($this->commentsCount)) {
+            $this->commentsCount = ArrayReader::getNestedPath($this->getJsonData(), "graphql/shortcode_media/edge_media_to_comment/count");
+        }
+        return $this->commentsCount;
+    }
+
+    /**
+     * @param int $commentsCount
+     */
+    public function setCommentsCount($commentsCount)
+    {
+        $this->commentsCount = $commentsCount;
     }
 
     /**
@@ -159,7 +323,18 @@ class Media
      */
     public function isCommentsDisabled()
     {
-        return ArrayReader::getNestedPath($this->getJsonData(), "graphql/shortcode_media/comments_disabled");
+        if (!isset($this->commentsDisabled)) {
+            $this->commentsDisabled = ArrayReader::getNestedPath($this->getJsonData(), "graphql/shortcode_media/comments_disabled");
+        }
+        return $this->commentsDisabled;
+    }
+
+    /**
+     * @param bool $commentsDisabled
+     */
+    public function setCommentsDisabled($commentsDisabled)
+    {
+        $this->commentsDisabled = $commentsDisabled;
     }
 
     /**
@@ -167,7 +342,18 @@ class Media
      */
     public function getTakenTimestamp()
     {
-        return intval(ArrayReader::getNestedPath($this->getJsonData(), "graphql/shortcode_media/taken_at_timestamp"));
+        if (!isset($this->takenTimestamp)) {
+            $this->takenTimestamp = intval(ArrayReader::getNestedPath($this->getJsonData(), "graphql/shortcode_media/taken_at_timestamp"));
+        }
+        return $this->takenTimestamp;
+    }
+
+    /**
+     * @param int $takenTimestamp
+     */
+    public function setTakenTimestamp($takenTimestamp)
+    {
+        $this->takenTimestamp = $takenTimestamp;
     }
 
     /**
@@ -175,15 +361,60 @@ class Media
      */
     public function getLikesCount()
     {
-        return ArrayReader::getNestedPath($this->getJsonData(), "graphql/shortcode_media/edge_media_preview_like/count");
+        if (!isset($this->likesCount)) {
+            $this->likesCount = ArrayReader::getNestedPath($this->getJsonData(), "graphql/shortcode_media/edge_media_preview_like/count");
+        }
+        return $this->likesCount;
     }
 
     /**
-     * @return string|null
+     * @param int $likesCount
+     */
+    public function setLikesCount($likesCount)
+    {
+        $this->likesCount = $likesCount;
+    }
+
+    /**
+     * @return array
+     */
+    public function getLikingUsers()
+    {
+        if (!isset($this->likingUsers)) {
+            //TODO: Media liking users
+        }
+        return $this->likingUsers;
+    }
+
+    /**
+     * @param array $likingUsers
+     */
+    public function setLikingUsers($likingUsers)
+    {
+        $this->likingUsers = $likingUsers;
+    }
+
+    /**
+     * @return Location
      */
     public function getLocation()
     {
-        return ArrayReader::getNestedPath($this->getJsonData(), "graphql/shortcode_media/location");
+        if (!isset($this->location)) {
+            try {
+                $this->location = Location::createFromId(rrayReader::getNestedPath($this->getJsonData(), "graphql/shortcode_media/location/id"));
+            } catch (\Exception $exception) {
+
+            }
+        }
+        return $this->location;
+    }
+
+    /**
+     * @param Location $location
+     */
+    public function setLocation($location)
+    {
+        $this->location = $location;
     }
 
     /**
@@ -191,8 +422,27 @@ class Media
      */
     public function getOwner()
     {
-        $owner = Account::createFromUsername(ArrayReader::getNestedPath($this->getJsonData(), "graphql/shortcode_media/owner/username"));
-        return $owner;
+        if (!isset($this->owner)) {
+            $this->owner = Account::createFromUsername(ArrayReader::getNestedPath($this->getJsonData(), "graphql/shortcode_media/owner/username"));
+        }
+        return $this->owner;
     }
+
+    /**
+     * @param Account $owner
+     */
+    public function setOwner($owner)
+    {
+        $this->owner = $owner;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getJsonLink()
+    {
+        return Endpoints::getMediaJsonLink($this->code);
+    }
+
 
 }
