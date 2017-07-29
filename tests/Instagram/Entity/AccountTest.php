@@ -1,16 +1,16 @@
 <?php
 
 use Capimichi\Instagram\InstagramSession;
-use Capimichi\Instagram\Page\UserPage;
+use Capimichi\Instagram\Entity\Account;
 use PHPUnit\Framework\TestCase;
 
-class UserPageTest extends TestCase
+class AccountTest extends TestCase
 {
 
 
     public function testCanParseData()
     {
-        $userPage = new UserPage("capimichi2");
+        $userPage = Account::createFromUsername("capimichi2");
         self::assertEmpty($userPage->getBiography());
         self::assertInternalType("int", $userPage->getFollowersCount());
         self::assertInternalType("int", $userPage->getFollowedCount());
@@ -30,9 +30,19 @@ class UserPageTest extends TestCase
     {
         InstagramSession::setCredential("capimichi2", "Benten.10");
         InstagramSession::login();
-        $userPage = new UserPage("chanelofficial");
+        $userPage = Account::createFromUsername("chanelofficial");
         self::assertCount(500, $userPage->getFollowers(500));
         self::assertCount(700, $userPage->getFollowers(700));
         self::assertCount(1000, $userPage->getFollowers(1000));
+    }
+
+    public function testCanGetMedias()
+    {
+//        InstagramSession::setCredential("capimichi2", "Benten.10");
+//        InstagramSession::login();
+        $userPage = Account::createFromUsername("chanelofficial");
+        self::assertCount(20, $userPage->getMedias(20));
+        self::assertCount(100, $userPage->getMedias(100));
+        self::assertCount(200, $userPage->getMedias(200));
     }
 }
