@@ -60,4 +60,42 @@ class AccountAnalyzer
         return $sum / count($followers);
     }
 
+    /**
+     * @return float|int
+     */
+    public function getRatioFollowersLikesComments()
+    {
+        $lastMedias = $this->account->getMedias(20);
+        $averageLikesComments = 0;
+        foreach ($lastMedias as $lastMedia) {
+            /**
+             * @var Media $lastMedia
+             */
+            $averageLikesComments += $lastMedia->getCommentsCount() + $lastMedia->getLikesCount();
+        }
+        $averageLikesComments /= count($lastMedias);
+        $ratio = ($this->account->getFollowersCount() / $averageLikesComments) * 100;
+        return $ratio;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBot()
+    {
+        if ($this->account->getFollowersCount() < 1000) {
+            return $this->getRatioFollowersLikesComments() < 7.8;
+        }
+        if ($this->account->getFollowersCount() < 10000) {
+            return $this->getRatioFollowersLikesComments() < 3.8;
+        }
+        if ($this->account->getFollowersCount() < 100000) {
+            return $this->getRatioFollowersLikesComments() < 2.3;
+        }
+        if ($this->account->getFollowersCount() < 1000000) {
+            return $this->getRatioFollowersLikesComments() < 1.78;
+        }
+        return $this->getRatioFollowersLikesComments() < 1.66;
+    }
+
 }
