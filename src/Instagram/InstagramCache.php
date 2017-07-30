@@ -48,7 +48,9 @@ class InstagramCache
             "path" => self::$path,
         ));
 
-        self::$cache = CacheManager::getInstance('files');
+        self::$cache = CacheManager::getInstance('files', [
+            'ignoreSymfonyNotice' => true,
+        ]);
     }
 
 

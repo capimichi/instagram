@@ -73,9 +73,21 @@ class AccountAnalyzer
              */
             $averageLikesComments += $lastMedia->getCommentsCount() + $lastMedia->getLikesCount();
         }
-        $averageLikesComments /= count($lastMedias);
+        if (!$averageLikesComments) {
+            $averageLikesComments = 0.1;
+        }
+        $dividend = count($lastMedias) ? count($lastMedias) : 0.1;
+        $averageLikesComments /= $dividend;
         $ratio = ($this->account->getFollowersCount() / $averageLikesComments) * 100;
         return $ratio;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRatioFollowersFollowing()
+    {
+        return min(1, $this->account->getFollowersCount() / $this->account->getFollowedCount());
     }
 
     /**
