@@ -5,7 +5,6 @@ namespace Capimichi\Instagram\Entity;
 
 use Capimichi\Instagram\ArrayReader;
 use Capimichi\Instagram\Endpoints;
-use Capimichi\Instagram\Request\AuthenticatedCachedRequest;
 use Capimichi\Instagram\Request\AuthenticatedRequest;
 use Capimichi\Instagram\Request\CachedRequest;
 use Unirest\Request;
@@ -354,7 +353,7 @@ class Account extends InstagramEntity
             if ($after) {
                 $endUrl .= "&after=" . $after;
             }
-            $response = AuthenticatedCachedRequest::get($endUrl);
+            $response = AuthenticatedRequest::get($endUrl);
             $data = $response->raw_body;
             $data = json_decode($data, true);
             array_push($datas, $data);
@@ -391,7 +390,7 @@ class Account extends InstagramEntity
         $medias = [];
         $isMoreAvailable = true;
         while ($index < $count && $isMoreAvailable) {
-            $response = CachedRequest::get(Endpoints::getAccountMediasJsonLink($username, $maxId));
+            $response = Request::get(Endpoints::getAccountMediasJsonLink($username, $maxId));
             if ($response->code !== 200) {
                 throw new \Exception('Response code is ' . $response->code . '. Body: ' . $response->body . ' Something went wrong. Please report issue.');
             }
