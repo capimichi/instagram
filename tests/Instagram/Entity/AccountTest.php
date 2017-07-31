@@ -30,7 +30,7 @@ class AccountTest extends TestCase
 
     public function testCanGetFollowers()
     {
-        InstagramSession::setCredential("capimichi2", "Benten.10");
+        InstagramSession::setCredential("capimichi2", "briscola2");
         InstagramSession::login();
         $userPage = Account::createFromUsername("chanelofficial");
         $followers = $userPage->getFollowers(500);
